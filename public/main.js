@@ -39,16 +39,23 @@
     }]
   });
 
+
   // fetch data of movies watched by decade
   const decadesResponse = await fetch('decades');
   const decadesData = await decadesResponse.json();
+
+  /*
+  Create Bar Chart
+  Visualizes all movies watched by decade
+  x axis --> 1910s 1920s 1930s 1940s 1950s 1960s 1970s 1980s 1990s 2000s 2010s
+  */
 
   Highcharts.chart('decades', {
     chart: {
       type: 'column'
     },
     title: {
-      text: 'Movies Watched by Decade'
+      text: 'Number of Movies Watched According to Decade'
     },
     xAxis: {
       categories: [
@@ -84,13 +91,41 @@
     }]
   });
 
+  const frequencyResponse = await fetch('frequency');
+  const frequencyData = await frequencyResponse.json();
+
+  console.log('frequencyData -->', frequencyData)
+  Highcharts.chart('frequency', {
+    chart: {
+      type: 'line'
+    },
+    title: {
+      text: 'Number of Movies Watched per Month'
+    },
+    xAxis: {
+      type: 'datetime',
+      minTickInterval: 30 * 24 * 3600 * 1000,
+      min: frequencyData.startPoint,
+      max: Date.UTC(new Date().getFullYear(), new Date().getMonth())
+    },
+    yAxis: {
+      title:  {
+        text: 'Movies Watched'
+      }
+    },
+    plotOptions: {
+    line: {
+        dataLabels: {
+          enabled: true
+        },
+      }
+    },
+    series: [{
+      name: 'Jacob',
+      pointInterval: 30 * 24 * 3600 * 1000,
+      pointStart: frequencyData.startPoint,
+      data: frequencyData.data
+    }]
+  });
+
 })();
-
-/*
-
-Bar Chart
-Visualizes all movies watched by year
-
-1910 1920 1930 1940 1950 1960 1970 1980 1990 2000 2010
-
-*/

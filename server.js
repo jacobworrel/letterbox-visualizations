@@ -1,5 +1,6 @@
 const express = require('express');
 const csv = require('csvtojson');
+const moment = require('moment');
 
 const app = express();
 
@@ -64,6 +65,53 @@ app.get('/decades', (req, res) => {
     const moviesWatchedByDecade = Object.values(aggregate);
     res.send(moviesWatchedByDecade);
   });
+});
+
+app.get('/frequency', (req, res) => {
+  const originalAggregate = {};
+  let startMonth;
+  let startPoint;
+  let isFirst = true;
+
+  csv()
+  .fromFile(__dirname + '/data/diary.csv')
+  .on('json', (movie) => {
+    if (isFirst) {
+      const year = +movie['Watched Date'].slice(0, 4);
+      const month = (+movie['Watched Date'].slice(5, 7)) - 1;
+      startPoint = Date.UTC(year, month);
+      startMonth = moment(movie['Watched Date'].slice(0, 7));
+      isFirst = false;
+    }
+    const currMonth = movie['Watched Date'].slice(0, 7);
+    if (!originalAggregate[currMonth]) originalAggregate[currMonth] = 0;
+    originalAggregate[currMonth] += 1;
+  })
+  .on('done', (error) => {
+    const endMonth = moment();
+    const range = [];
+    while (endMonth >= startMonth) {
+      range.push(startMonth.format('YYYY-MM'));
+      startMonth.add(1, 'months');
+    }
+    const finalAggregate = {};
+    range.forEach((month) => {
+      if (originalAggregate[month]) finalAggregate[month] = originalAggregate[month];
+      else finalAggregate[month] = 0;
+    });
+    const months = Object.keys(finalAggregate);
+    const moviesWatchedPerMonth = Object.values(finalAggregate);
+    const data = [];
+    for (let key in finalAggregate) {
+      if (finalAggregate.hasOwnProperty(key)) {
+        data.push([moment.utc(key).valueOf(), finalAggregate[key]]);
+      }
+    }
+    console.log('data -->', data)
+    const payload = { data, startPoint };
+    res.send(payload);
+  });
+
 });
 
 app.listen(3000, () => console.log('listening on 3000'));
