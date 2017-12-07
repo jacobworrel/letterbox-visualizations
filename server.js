@@ -4,7 +4,7 @@ const moment = require('moment');
 
 const app = express();
 
-app.use(express.static('public'));
+app.use(express.static('dist'));
 
 app.get('/ratings', (req, res) => {
   const aggregate = {};
@@ -99,15 +99,12 @@ app.get('/frequency', (req, res) => {
       if (originalAggregate[month]) finalAggregate[month] = originalAggregate[month];
       else finalAggregate[month] = 0;
     });
-    const months = Object.keys(finalAggregate);
-    const moviesWatchedPerMonth = Object.values(finalAggregate);
     const data = [];
     for (let key in finalAggregate) {
       if (finalAggregate.hasOwnProperty(key)) {
         data.push([moment.utc(key).valueOf(), finalAggregate[key]]);
       }
     }
-    console.log('data -->', data)
     const payload = { data, startPoint };
     res.send(payload);
   });

@@ -1,9 +1,8 @@
-(async function() {
+const Highcharts = require('highcharts');
 
-  // fetch data for movie ratings
-  const ratingsResponse = await fetch('ratings');
-  const ratingsData = await ratingsResponse.json();
+require('highcharts/modules/exporting')(Highcharts);
 
+export function buildRatingsChart(data) {
   Highcharts.chart('ratings', {
     chart: {
         plotBackgroundColor: null,
@@ -35,21 +34,12 @@
     series: [{
         name: 'Percentage',
         colorByPoint: true,
-        data: ratingsData
+        data
     }]
   });
+}
 
-
-  // fetch data of movies watched by decade
-  const decadesResponse = await fetch('decades');
-  const decadesData = await decadesResponse.json();
-
-  /*
-  Create Bar Chart
-  Visualizes all movies watched by decade
-  x axis --> 1910s 1920s 1930s 1940s 1950s 1960s 1970s 1980s 1990s 2000s 2010s
-  */
-
+export function buildDecadesChart(data) {
   Highcharts.chart('decades', {
     chart: {
       type: 'column'
@@ -87,25 +77,23 @@
     },
     series: [{
       name: 'Jacob',
-      data: decadesData
+      data
     }]
   });
+}
 
-  const frequencyResponse = await fetch('frequency');
-  const frequencyData = await frequencyResponse.json();
-
-  console.log('frequencyData -->', frequencyData)
+export function buildFrequencyChart(data, startPoint) {
   Highcharts.chart('frequency', {
     chart: {
       type: 'line'
     },
     title: {
-      text: 'Number of Movies Watched per Month'
+      text: 'Number of Movies Watched Per Month'
     },
     xAxis: {
       type: 'datetime',
       minTickInterval: 30 * 24 * 3600 * 1000,
-      min: frequencyData.startPoint,
+      min: startPoint,
       max: Date.UTC(new Date().getFullYear(), new Date().getMonth())
     },
     yAxis: {
@@ -123,9 +111,8 @@
     series: [{
       name: 'Jacob',
       pointInterval: 30 * 24 * 3600 * 1000,
-      pointStart: frequencyData.startPoint,
-      data: frequencyData.data
+      pointStart: startPoint,
+      data
     }]
   });
-
-})();
+}
