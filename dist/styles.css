@@ -1,0 +1,12 @@
+body {
+  background-color: #1B1E22;
+  color: #FFF;
+}
+
+hr {
+  width: 50%;
+}
+
+.chart {
+  margin: 3em 0;
+}

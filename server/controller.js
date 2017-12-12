@@ -1,16 +1,14 @@
-const express = require('express');
 const csv = require('csvtojson');
 const moment = require('moment');
 
-const app = express();
+const controller = {};
 
-app.use(express.static('dist'));
-
-app.get('/ratings', (req, res) => {
+controller.transformRatingsData = function(req, res) {
+  console.log('inside')
   const aggregate = {};
   let count = 0;
   csv()
-  .fromFile(__dirname + '/data/ratings.csv')
+  .fromFile(__dirname + '/../data/ratings.csv')
   .on('json', (movie) => {
     if (movie.Rating) {
       if (!aggregate[movie.Rating]) aggregate[movie.Rating] = 0;
@@ -30,9 +28,9 @@ app.get('/ratings', (req, res) => {
     });
     res.send(data);
   });
-});
+}
 
-app.get('/decades', (req, res) => {
+controller.transformDecadesData = function(req, res) {
   const aggregate = {
     "1910s": 0,
     "1920s": 0,
@@ -47,7 +45,7 @@ app.get('/decades', (req, res) => {
     "2010s": 0
   };
   csv()
-  .fromFile(__dirname + '/data/watched.csv')
+  .fromFile(__dirname + '/../data/watched.csv')
   .on('json', (movie) => {
     if (movie.Year >= 1910 && movie.Year < 1920) aggregate["1910s"] += 1;
     if (movie.Year >= 1920 && movie.Year < 1930) aggregate["1920s"] += 1;
@@ -65,16 +63,16 @@ app.get('/decades', (req, res) => {
     const moviesWatchedByDecade = Object.values(aggregate);
     res.send(moviesWatchedByDecade);
   });
-});
+}
 
-app.get('/frequency', (req, res) => {
+controller.transformMonthlyViewingData = function(req, res) {
   const originalAggregate = {};
   let startMonth;
   let startPoint;
   let isFirst = true;
 
   csv()
-  .fromFile(__dirname + '/data/diary.csv')
+  .fromFile(__dirname + '/../data/diary.csv')
   .on('json', (movie) => {
     if (isFirst) {
       const year = +movie['Watched Date'].slice(0, 4);
@@ -96,9 +94,12 @@ app.get('/frequency', (req, res) => {
     }
     const finalAggregate = {};
     range.forEach((month) => {
+      // if month is in original aggregate object, copy values over to final aggregate object
       if (originalAggregate[month]) finalAggregate[month] = originalAggregate[month];
+      // if month is not in original aggregate object, add it to final aggregate object and set value to 0
       else finalAggregate[month] = 0;
     });
+    // transform data into an array of subarrays (with values for x and y)
     const data = [];
     for (let key in finalAggregate) {
       if (finalAggregate.hasOwnProperty(key)) {
@@ -108,7 +109,6 @@ app.get('/frequency', (req, res) => {
     const payload = { data, startPoint };
     res.send(payload);
   });
+}
 
-});
-
-app.listen(3000, () => console.log('listening on 3000'));
+module.exports = controller;

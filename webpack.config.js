@@ -22,29 +22,6 @@ module.exports = {
 
     devtool: 'source-map',
 
-    // module: {
-    //     rules: [{
-    //         test: /\.(js|jsx)$/,
-    //         use: [
-    //             'babel-loader'
-    //         ],
-    //         exclude: /node_modules/
-    //     },
-    //     {
-    //         test: /\.css$/,
-    //         use: [
-    //           { loader: 'style-loader' },
-    //           {
-    //             loader: 'css-loader',
-    //             options: {
-    //               modules: true,
-    //               localIdentName: '[path][name]__[local]--[hash:base64:5]'
-    //             }
-    //           }
-    //         ]
-    //       }],
-    // },
-
     plugins: [
       new UglifyJSPlugin({
         sourceMap: true
