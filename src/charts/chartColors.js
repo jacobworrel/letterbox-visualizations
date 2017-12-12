@@ -1,4 +1,5 @@
-export const TITLE_COLOR = '#FFF';
-export const LABEL_COLOR = '#9ab';
 export const BACKGROUND_COLOR = '#1B1E22';
-export const GRID_COLOR = '#9ab';
+export const WHITE = '#FFF';
+export const GREY = '#9ab';
+export const GREEN = '#2BBF05';
+export const DARK_BLUE = '#727D91';

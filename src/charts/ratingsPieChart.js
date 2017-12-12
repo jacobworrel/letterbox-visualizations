@@ -5,7 +5,7 @@ require('highcharts/modules/exporting')(Highcharts);
 import * as colors from './chartColors';
 
 export function ratingsPieChart(data) {
-  Highcharts.chart('ratings', {
+  Highcharts.chart('ratings-chart', {
     chart: {
         backgroundColor: colors.BACKGROUND_COLOR,
         plotBackgroundColor: null,
@@ -16,7 +16,7 @@ export function ratingsPieChart(data) {
     title: {
         text: 'How You Rate Movies',
         style: {
-          color: colors.TITLE_COLOR
+          color: colors.WHITE
         }
     },
     tooltip: {
@@ -32,7 +32,8 @@ export function ratingsPieChart(data) {
                 enabled: true,
                 format: '<b>{point.name}</b>: {point.percentage:.1f} %',
                 style: {
-                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                  color: colors.WHITE,
+                  textOutline: false
                 }
             }
         }

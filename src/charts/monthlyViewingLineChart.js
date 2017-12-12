@@ -5,7 +5,7 @@ require('highcharts/modules/exporting')(Highcharts);
 import * as colors from './chartColors';
 
 export function monthlyViewingLineChart(data, startPoint) {
-  Highcharts.chart('monthlyViewing', {
+  Highcharts.chart('monthly-viewing-chart', {
     chart: {
       backgroundColor: colors.BACKGROUND_COLOR,
       type: 'line'
@@ -13,7 +13,7 @@ export function monthlyViewingLineChart(data, startPoint) {
     title: {
       text: 'Number of Movies Watched Per Month',
       style: {
-        color: colors.TITLE_COLOR
+        color: colors.WHITE
       }
     },
     xAxis: {
@@ -23,7 +23,7 @@ export function monthlyViewingLineChart(data, startPoint) {
       max: Date.UTC(new Date().getFullYear(), new Date().getMonth()),
       labels: {
         style: {
-          color: colors.LABEL_COLOR
+          color: colors.GREY
         }
       }
     },
@@ -31,25 +31,35 @@ export function monthlyViewingLineChart(data, startPoint) {
       title:  {
         text: 'Movies Watched',
         style: {
-          color: colors.TITLE_COLOR
+          color: colors.WHITE
         }
       },
       labels: {
         style: {
-          color: colors.LABEL_COLOR
+          color: colors.GREY
         }
       },
-      gridLineColor: colors.GRID_COLOR
+      // minorGridLineWidth: 0,
+      // lineWidth: 0,
+      gridLineColor: 'transparent'
     },
     plotOptions: {
-    line: {
+      line: {
         dataLabels: {
-          enabled: true
+          enabled: true,
+          style: {
+            color: colors.WHITE,
+            textOutline: false
+          }
         },
+      },
+      series: {
+        color: colors.DARK_BLUE
       }
     },
     series: [{
-      name: 'Jacob',
+      name: 'Movies Watched',
+      showInLegend: false,
       pointInterval: 30 * 24 * 3600 * 1000,
       pointStart: startPoint,
       data

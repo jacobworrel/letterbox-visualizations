@@ -5,6 +5,7 @@ const app = express();
 
 app.use(express.static('dist'));
 
+app.get('/stats', controller.getUserStats);
 app.get('/ratings', controller.transformRatingsData);
 app.get('/decades', controller.transformDecadesData);
 app.get('/monthlyViewing', controller.transformMonthlyViewingData);

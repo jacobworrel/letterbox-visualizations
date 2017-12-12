@@ -5,7 +5,7 @@ require('highcharts/modules/exporting')(Highcharts);
 import * as colors from './chartColors';
 
 export function decadesBarChart(data) {
-  Highcharts.chart('decades', {
+  Highcharts.chart('decades-chart', {
     chart: {
       backgroundColor: colors.BACKGROUND_COLOR,
       type: 'column'
@@ -13,7 +13,7 @@ export function decadesBarChart(data) {
     title: {
       text: 'Number of Movies Watched According to Decade',
       style: {
-        color: colors.TITLE_COLOR
+        color: colors.WHITE
       }
     },
     xAxis: {
@@ -33,7 +33,7 @@ export function decadesBarChart(data) {
       crosshair:  true,
       labels: {
         style: {
-          color: colors.LABEL_COLOR
+          color: colors.GREY
         }
       }
     },
@@ -42,24 +42,28 @@ export function decadesBarChart(data) {
       title:  {
         text: 'Movies Watched',
         style: {
-          color: colors.TITLE_COLOR
+          color: colors.WHITE
         }
       },
       labels: {
         style: {
-          color: colors.LABEL_COLOR
+          color: colors.GREY
         }
       },
-      gridLineColor: colors.GRID_COLOR
+      gridLineColor: colors.GREY
     },
     plotOptions: {
-    column: {
-        pointPadding: 0.2,
-        borderWidth: 0
+      column: {
+          pointPadding: 0.2,
+          borderWidth: 0
+        },
+      series: {
+        color: colors.DARK_BLUE
       }
     },
     series: [{
-      name: 'Jacob',
+      showInLegend: false,
+      name: 'Movies Watched:',
       data
     }]
   });

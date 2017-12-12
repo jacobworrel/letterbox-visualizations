@@ -4,7 +4,6 @@ const moment = require('moment');
 const controller = {};
 
 controller.transformRatingsData = function(req, res) {
-  console.log('inside')
   const aggregate = {};
   let count = 0;
   csv()
@@ -109,6 +108,86 @@ controller.transformMonthlyViewingData = function(req, res) {
     const payload = { data, startPoint };
     res.send(payload);
   });
+}
+
+controller.getUserStats = async function(req, res) {
+  let maxMoviesIn1Day = { count: 0, "Watched Date": '' };
+  let maxMoviesFrom1Year = { count: 0, "Year": '' };
+  let mostRewatchedMovie = { count: 0, "Name": '' };
+  let moviesWatchedByDate = {};
+  let moviesWatchedByYear = {};
+  let movieWatchCount = {};
+
+  const longestStreak = await controller.parseCSV(
+    '/../data/diary.csv',
+    (movie) => {
+      controller.populateCache(movie, moviesWatchedByDate, 'Watched Date', maxMoviesIn1Day);
+      controller.populateCache(movie, movieWatchCount, 'Name', mostRewatchedMovie);
+    },
+    (error) => {
+      if (error) controller.reject(error);
+      const longestStreak = controller.getLongestStreak(moviesWatchedByDate)
+      controller.resolve(longestStreak);
+    }
+  );
+
+await controller.parseCSV(
+  '/../data/watched.csv',
+  (movie) => {
+    controller.populateCache(movie, moviesWatchedByYear, 'Year', maxMoviesFrom1Year);
+  },
+  (error) => {
+    if (error) controller.reject(err);
+    controller.resolve();
+  }
+);
+
+  const payload = {
+    maxMoviesIn1Day,
+    mostRewatchedMovie,
+    longestStreak,
+    maxMoviesFrom1Year
+  };
+  res.send(payload);
+}
+
+// HELPER FUNCTIONS
+
+controller.parseCSV = function(path, onJsonCallback, onDoneCallback) {
+  return new Promise((resolve, reject) => {
+    this.resolve = resolve;
+    this.reject = reject;
+    csv()
+    .fromFile(__dirname + path)
+    .on('json', onJsonCallback)
+    .on('done', onDoneCallback);
+  });
+}
+
+controller.populateCache = function(movie, cache, category, tracker) {
+  const key = movie[category];
+  if (!cache[key]) cache[key] = 0;
+  cache[key] += 1;
+  if (cache[key] > tracker.count) {
+    tracker.count = cache[key];
+    tracker[category] = key;
+  }
+}
+
+controller.getLongestStreak = function(data) {
+  let currStreak = { streak: 0, days: [] };
+  const dates = Object.keys(data);
+  return dates.reduce((acc, curr, i) => {
+    const prev = dates[i - 1];
+    if (prev && moment(curr).diff(moment(prev), 'days') === 1) {
+      currStreak.streak += 1;
+      currStreak.days.push(curr);
+    } else {
+      currStreak.streak = 1;
+      currStreak.days = [curr];
+    }
+    return currStreak.streak > acc.streak ? { streak: currStreak.streak, days: currStreak.days.slice() } : acc;
+  }, { streak: 0, days: [] });
 }
 
 module.exports = controller;
