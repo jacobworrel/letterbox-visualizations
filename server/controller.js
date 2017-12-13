@@ -175,19 +175,19 @@ controller.populateCache = function(movie, cache, category, tracker) {
 }
 
 controller.getLongestStreak = function(data) {
-  let currStreak = { streak: 0, days: [] };
+  let currStreak = { streak: 0, streakDays: [] };
   const dates = Object.keys(data);
   return dates.reduce((acc, curr, i) => {
     const prev = dates[i - 1];
     if (prev && moment(curr).diff(moment(prev), 'days') === 1) {
       currStreak.streak += 1;
-      currStreak.days.push(curr);
+      currStreak.streakDays.push(curr);
     } else {
       currStreak.streak = 1;
-      currStreak.days = [curr];
+      currStreak.streakDays = [curr];
     }
-    return currStreak.streak > acc.streak ? { streak: currStreak.streak, days: currStreak.days.slice() } : acc;
-  }, { streak: 0, days: [] });
+    return currStreak.streak > acc.streak ? { streak: currStreak.streak, streakDays: currStreak.streakDays.slice() } : acc;
+  }, { streak: 0, streakDays: [] });
 }
 
 module.exports = controller;
