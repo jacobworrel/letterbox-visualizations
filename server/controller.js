@@ -131,23 +131,35 @@ controller.getUserStats = async function(req, res) {
     }
   );
 
-await controller.parseCSV(
-  '/../data/watched.csv',
-  (movie) => {
-    controller.populateCache(movie, moviesWatchedByYear, 'Year', maxMoviesFrom1Year);
-  },
-  (error) => {
-    if (error) controller.reject(err);
-    controller.resolve();
-  }
-);
+  await controller.parseCSV(
+    '/../data/watched.csv',
+    (movie) => {
+      controller.populateCache(movie, moviesWatchedByYear, 'Year', maxMoviesFrom1Year);
+    },
+    (error) => {
+      if (error) controller.reject(err);
+      controller.resolve();
+    }
+  );
+
+  const streakDaysFormatted = longestStreak.streakDays.map(date => {
+    return moment(date).format('MMM Do YYYY');
+  });
+  const bestDayFormatted = moment(maxMoviesIn1Day["Watched Date"]).format('MMM Do YYYY');
 
   const payload = {
-    maxMoviesIn1Day,
+    maxMoviesIn1Day: {
+      count: maxMoviesIn1Day.count,
+      "Watched Date": bestDayFormatted
+    },
     mostRewatchedMovie,
-    longestStreak,
+    longestStreak: {
+      streak: longestStreak.streak,
+      streakDays: streakDaysFormatted
+    },
     maxMoviesFrom1Year
   };
+
   res.send(payload);
 }
 

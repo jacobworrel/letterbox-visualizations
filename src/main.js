@@ -38,12 +38,14 @@ import { decadesBarChart, monthlyViewingLineChart, ratingsPieChart } from './cha
 
     // create category element (p tag)
     const categoryElem = document.createElement('p');
+    categoryElem.className = 'stat-item';
     const categoryText = document.createTextNode(category);
     categoryElem.appendChild(categoryText);
     statContainer.appendChild(categoryElem);
 
     // create stat element (h3 tag)
     const statElem = document.createElement('h3');
+    statElem.className = 'stat-item';
     const statText = document.createTextNode(stat);
     statElem.appendChild(statText);
     statContainer.appendChild(statElem);
@@ -51,6 +53,7 @@ import { decadesBarChart, monthlyViewingLineChart, ratingsPieChart } from './cha
     // create detail element (p tag)
     // create stat element (h3 tag)
     const detailElem = document.createElement('p');
+    detailElem.className = 'stat-item';
     const detailText = document.createTextNode(detail);
     detailElem.appendChild(detailText);
     statContainer.appendChild(detailElem);
